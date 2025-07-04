@@ -1,0 +1,16 @@
+{
+  "name": "ipl-tips",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run dev --prefix ipl-tips-backend\" \"npm start --prefix ipl-tips-frontend\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
