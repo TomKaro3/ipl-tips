@@ -29,51 +29,56 @@ export default function LoginPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-indigo-100 px-4"
+      transition={{ duration: 0.7 }}
+      className="flex items-center justify-center min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-800 to-pink-700 px-6"
     >
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 120, damping: 15 }}
-        className="w-full max-w-md p-8 bg-white rounded-3xl shadow-2xl border border-blue-200"
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.3 }}
+        className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10 sm:p-12"
       >
-        <h2 className="text-3xl font-extrabold text-center text-indigo-700 mb-8 tracking-wide">
-          Illawarra Tips Login
-        </h2>
-        <div className="space-y-6">
+        <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-10 tracking-tight">
+          Welcome Back
+        </h1>
+
+        <div className="space-y-8">
           <input
-            className="w-full px-5 py-4 text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 placeholder-indigo-300 transition"
+            type="text"
             placeholder="Username"
             value={username}
             onChange={e => setUsername(e.target.value)}
             disabled={loading}
+            className="w-full px-6 py-4 text-lg rounded-xl border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 transition"
           />
+
           <input
             type="password"
-            className="w-full px-5 py-4 text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-300 placeholder-indigo-300 transition"
             placeholder="Password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             disabled={loading}
+            className="w-full px-6 py-4 text-lg rounded-xl border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 transition"
           />
+
           <button
             onClick={handleLogin}
             disabled={loading}
             className={`w-full py-4 text-white text-lg font-semibold rounded-xl transition-colors ${
               loading
                 ? "bg-indigo-300 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+                : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-600"
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </div>
-        <p className="mt-6 text-center text-sm text-indigo-600">
+
+        <p className="mt-10 text-center text-sm text-gray-500">
           Don’t have an account?{" "}
           <Link
             to="/signup"
-            className="font-semibold underline hover:text-indigo-800"
+            className="font-medium text-indigo-600 hover:text-indigo-800 underline"
           >
             Sign up here
           </Link>
