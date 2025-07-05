@@ -29,6 +29,7 @@ export default function LoginPage() {
     justifyContent: "center",
     alignItems: "center",
     padding: "1rem",
+    background: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
     background: "linear-gradient(135deg, #4b6cb7, #182848)",
     fontFamily: "Arial, sans-serif",
   };
@@ -63,7 +64,9 @@ export default function LoginPage() {
     color: "#fff",
     fontWeight: "bold",
     cursor: "pointer",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     background: "linear-gradient(135deg, #ff416c, #ff4b2b)",
+
   };
 
   const buttonDisabled = {
@@ -75,7 +78,20 @@ export default function LoginPage() {
   return (
     <div style={page}>
       <div style={card}>
+        <h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>IPL Tips</h1>
+        <h2
+          style={{
+            margin: "0 0 0.5rem 0",
+            textAlign: "center",
+            color: "#333",
+            fontWeight: "normal",
+          }}
+        >
+          Welcome back
+        </h2>
+
         <h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>Welcome Back</h1>
+
         <input
           type="text"
           placeholder="Username"
