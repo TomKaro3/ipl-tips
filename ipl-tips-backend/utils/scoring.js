@@ -1,22 +1,43 @@
 const User = require("../schemas/User");
-const axios = require("axios");
+const puppeteer = require("puppeteer");
 
-const REQUEST_HEADERS = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-    "AppleWebKit/537.36 (KHTML, like Gecko) " +
-    "Chrome/117.0.0.0 Safari/537.36",
-};
+async function launchBrowser() {
+  return await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+}
 
 async function calculateScores(roundNumber) {
   const url = `https://mc-api.dribl.com/api/results?league=gld4J2geNW&type_round=roundrobin_${roundNumber}`;
 
+  // Launch Puppeteer and fetch results JSON text
+  const browser = await launchBrowser();
+  const page = await browser.newPage();
+
+  // Set user agent to look like a normal browser
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+    'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+    'Chrome/117.0.0.0 Safari/537.36'
+  );
+
+  const response = await page.goto(url, { waitUntil: 'networkidle2' });
+
+  if (!response || response.status() !== 200) {
+    await browser.close();
+    throw new Error(`Failed to load results page, status: ${response ? response.status() : 'no response'}`);
+  }
+
+  // Get the page text content (the JSON response)
+  const bodyText = await page.evaluate(() => document.body.innerText);
+  await browser.close();
+
   let parsed;
   try {
-    const { data } = await axios.get(url, { headers: REQUEST_HEADERS });
-    parsed = data;
+    parsed = JSON.parse(bodyText);
   } catch (err) {
-    throw new Error(`Failed to fetch results: ${err.message}`);
+    throw new Error(`Failed to parse results JSON: ${err.message}`);
   }
 
   const matches = parsed.data; // your JSON has results under data

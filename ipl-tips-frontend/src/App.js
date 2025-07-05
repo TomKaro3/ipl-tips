@@ -15,14 +15,8 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/tips" element={<TipPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
-        <Route
-          path="/admin"
-          element={
-            <AdminOnlyRoute>
-              <AdminPage />
-            </AdminOnlyRoute>
-          }
-        />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin" element={<AdminOnlyRoute><AdminPage /></AdminOnlyRoute>} />
       </Routes>
     </BrowserRouter>
   );
