@@ -15,7 +15,7 @@ function TipPage() {
   useEffect(() => {
     const fetchRounds = async () => {
       try {
-        const res = await axios.get(`http://${process.env.REACT_APP_API_BASE_URL}/matches/rounds`);
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/matches/rounds`);
         const fetchedRounds = res.data.sort(
           (a, b) => Number(a.replace("R", "")) - Number(b.replace("R", ""))
         );
@@ -36,7 +36,7 @@ function TipPage() {
       setLoading(true);
       try {
         const matchesRes = await axios.get(
-          `http://${process.env.REACT_APP_API_BASE_URL}/matches?round=R${round}`
+          `${process.env.REACT_APP_API_BASE_URL}/matches?round=R${round}`
         );
         const matchData = matchesRes.data;
 
@@ -49,7 +49,7 @@ function TipPage() {
         setLockedMatches(locked);
 
         const userRes = await axios.get(
-          `http://${process.env.REACT_APP_API_BASE_URL}/users/${username}`
+          `${process.env.REACT_APP_API_BASE_URL}/users/${username}`
         );
         const roundKey = `round${round}`;
         const userTips = userRes.data.tips?.[roundKey] || {};
@@ -75,7 +75,7 @@ function TipPage() {
   const submitTips = () => {
     const roundKey = `round${round}`;
     axios
-      .post(`http://${process.env.REACT_APP_API_BASE_URL}/users/tip`, {
+      .post(`${process.env.REACT_APP_API_BASE_URL}/users/tip`, {
         username,
         round: roundKey,
         tips,

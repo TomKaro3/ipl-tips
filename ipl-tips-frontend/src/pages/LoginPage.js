@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   const handleLogin = () => {
     if (!username || !password) return alert("Enter both username and password");
-    axios.post(`http://${process.env.REACT_APP_API_BASE_URL}/users/login`, { username, password })
+    axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login`, { username, password })
       .then(() => {
         localStorage.setItem("username", username);
         navigate("/tips");
