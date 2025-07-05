@@ -5,7 +5,7 @@ export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/users/leaderboard")
+    axios.get("http://${process.env.REACT_APP_API_BASE_URL}/users/leaderboard")
       .then(res => setLeaderboard(res.data))
       .catch(err => console.error("Failed to load leaderboard", err));
   }, []);
