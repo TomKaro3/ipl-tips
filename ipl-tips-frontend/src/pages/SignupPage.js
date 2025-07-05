@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 export default function SignupPage() {
   const [username, setUsername] = useState("");

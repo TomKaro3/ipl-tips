@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 function TipPage() {
   const [matches, setMatches] = useState([]);
