@@ -1,19 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Match = require('../schemas/Match'); // adjust path if needed
-const chromium = require("chrome-aws-lambda");
-const puppeteer = require("puppeteer-core");
+const puppeteer = require("puppeteer");
 
 async function launchBrowser() {
-  const executablePath = (await chromium.executablePath) || "/usr/bin/google-chrome";
-
-  console.log("Using Chrome path:", executablePath); // ✅ TEMP log for Render
-
   return await puppeteer.launch({
-    args: chromium.args,
-    executablePath,
-    headless: chromium.headless,
-    ignoreHTTPSErrors: true,
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 }
 
