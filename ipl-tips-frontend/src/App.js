@@ -3,6 +3,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import TipPage from "./pages/TipPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/tips" element={<TipPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </BrowserRouter>
   );
