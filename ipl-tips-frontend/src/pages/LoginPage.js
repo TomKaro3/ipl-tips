@@ -30,7 +30,6 @@ export default function LoginPage() {
     alignItems: "center",
     padding: "1rem",
     background: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
-    background: "linear-gradient(135deg, #4b6cb7, #182848)",
     fontFamily: "Arial, sans-serif",
   };
 
@@ -65,8 +64,6 @@ export default function LoginPage() {
     fontWeight: "bold",
     cursor: "pointer",
     background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    background: "linear-gradient(135deg, #ff416c, #ff4b2b)",
-
   };
 
   const buttonDisabled = {
@@ -89,8 +86,6 @@ export default function LoginPage() {
         >
           Welcome back
         </h2>
-
-        <h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>Welcome Back</h1>
 
         <input
           type="text"
