@@ -23,17 +23,76 @@ export default function LoginPage() {
       .finally(() => setLoading(false));
   };
 
+  const page = {
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "1rem",
+    background: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
+    fontFamily: "Arial, sans-serif",
+  };
+
+  const card = {
+    width: "100%",
+    maxWidth: "360px",
+    background: "#ffffff",
+    borderRadius: "12px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+    padding: "2rem",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+  };
+
+  const inputStyle = {
+    width: "100%",
+    padding: "0.75rem 1rem",
+    fontSize: "1rem",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    boxSizing: "border-box",
+  };
+
+  const button = {
+    width: "100%",
+    padding: "0.75rem",
+    fontSize: "1rem",
+    border: "none",
+    borderRadius: "8px",
+    color: "#fff",
+    fontWeight: "bold",
+    cursor: "pointer",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  };
+
+  const buttonDisabled = {
+    ...button,
+    background: "#d3d3d3",
+    cursor: "not-allowed",
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-tr from-indigo-700 via-purple-700 to-pink-600 px-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8 space-y-6">
-        <h1 className="text-2xl font-bold text-center text-gray-900">Welcome Back</h1>
+    <div style={page}>
+      <div style={card}>
+        <h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>IPL Tips</h1>
+        <h2
+          style={{
+            margin: "0 0 0.5rem 0",
+            textAlign: "center",
+            color: "#333",
+            fontWeight: "normal",
+          }}
+        >
+          Welcome back
+        </h2>
         <input
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           disabled={loading}
-          className="w-full px-4 py-3 text-base bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400"
+          style={inputStyle}
         />
         <input
           type="password"
@@ -41,24 +100,18 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
-          className="w-full px-4 py-3 text-base bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400"
+          style={inputStyle}
         />
         <button
           onClick={handleLogin}
           disabled={loading}
-          className={`w-full py-3 text-white text-base font-medium rounded-xl transition ${
-            loading
-              ? "bg-purple-300 cursor-not-allowed"
-              : "bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-600 hover:to-pink-600"
-          }`}
+          style={loading ? buttonDisabled : button}
         >
           {loading ? "Logging in..." : "Log In"}
         </button>
-        <p className="text-center text-sm text-gray-500">
-          Don’t have an account?{" "}
-          <Link to="/signup" className="text-purple-600 font-medium hover:underline">
-            Sign up
-          </Link>
+        <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
+          Don’t have an account?{' '}
+          <Link to="/signup">Sign up</Link>
         </p>
       </div>
     </div>
