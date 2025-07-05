@@ -15,7 +15,7 @@ function TipPage() {
   useEffect(() => {
     const fetchRounds = async () => {
       try {
-        const res = await axios.get("http://${process.env.REACT_APP_API_BASE_URL}/matches/rounds");
+        const res = await axios.get(`http://${process.env.REACT_APP_API_BASE_URL}/matches/rounds`);
         const fetchedRounds = res.data.sort(
           (a, b) => Number(a.replace("R", "")) - Number(b.replace("R", ""))
         );
@@ -75,7 +75,7 @@ function TipPage() {
   const submitTips = () => {
     const roundKey = `round${round}`;
     axios
-      .post("http://${process.env.REACT_APP_API_BASE_URL}/users/tip", {
+      .post(`http://${process.env.REACT_APP_API_BASE_URL}/users/tip`, {
         username,
         round: roundKey,
         tips,
