@@ -5,12 +5,15 @@ const chromium = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer-core");
 
 async function launchBrowser() {
-  const executablePath = await chromium.executablePath || "/usr/bin/google-chrome";
+  const executablePath = (await chromium.executablePath) || "/usr/bin/google-chrome";
+
+  console.log("Using Chrome path:", executablePath); // ✅ TEMP log for Render
 
   return await puppeteer.launch({
     args: chromium.args,
     executablePath,
     headless: chromium.headless,
+    ignoreHTTPSErrors: true,
   });
 }
 
