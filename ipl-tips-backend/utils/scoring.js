@@ -3,11 +3,7 @@ const chromium = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer-core");
 
 async function launchBrowser() {
-  const executablePath = await chromium.executablePath;
-
-  if (!executablePath) {
-    throw new Error("Chrome not found. Check puppeteer-core and chrome-aws-lambda versions.");
-  }
+  const executablePath = await chromium.executablePath || "/usr/bin/google-chrome";
 
   return await puppeteer.launch({
     args: chromium.args,
