@@ -100,15 +100,6 @@ router.post('/importfixtures/:round', async (req, res) => {
   }
 });
 
-// Delete all matches (for testing/reset)
-router.delete('/clear', async (req, res) => {
-  try {
-    await Match.deleteMany({});
-    res.send("All matches deleted");
-  } catch (err) {
-    res.status(500).send("Failed to delete matches");
-  }
-});
 
 // For importing results (after round is over)
 router.post('/importresults/:round', async (req, res) => {
