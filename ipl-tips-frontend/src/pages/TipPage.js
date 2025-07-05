@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
@@ -9,6 +10,12 @@ function TipPage() {
   const [loading, setLoading] = useState(true);
   const [round, setRound] = useState(null);
   const [rounds, setRounds] = useState([]);
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("username");
+    navigate("/");
+  };
 
   const username = localStorage.getItem("username");
 
@@ -97,15 +104,23 @@ function TipPage() {
   const maxRound = Math.max(...roundNumbers);
 
   // --- STYLES ---
-  const container = {
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    padding: "1.5rem 1rem",
-    maxWidth: "600px",
-    margin: "1.5rem auto",
-    background: "linear-gradient(135deg, #f0f5ff, #e1ebff)",
+  const page = {
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    padding: "1rem",
+    background: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
+    fontFamily: "Arial, sans-serif",
+  };
+
+  const card = {
+    width: "100%",
+    maxWidth: "700px",
+    background: "#ffffff",
     borderRadius: "12px",
-    boxShadow:
-      "0 10px 25px rgba(14, 82, 230, 0.15), 0 4px 8px rgba(14, 82, 230, 0.1)",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+    padding: "2rem",
   };
 
   const header = {
@@ -198,10 +213,12 @@ function TipPage() {
   };
 
   return (
-    <div style={container}>
-      <h2 style={header}>
-        📜 Submit Your Tips — Round {round}
-      </h2>
+    <div style={page}>
+      <div style={card}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={header}>📜 Submit Your Tips — Round {round}</h2>
+          <button onClick={logout} style={{ padding: "0.4rem 0.8rem", border: "none", borderRadius: "8px", color: "#fff", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", cursor: "pointer", fontWeight: "bold" }}>Logout</button>
+        </div>
 
       {/* Round selection + navigation */}
       <div style={navBar}>
@@ -369,7 +386,8 @@ function TipPage() {
           🏆 View Leaderboard
         </a>
       </p>
-    </div>
+        </div>
+      </div>
   );
 }
 
