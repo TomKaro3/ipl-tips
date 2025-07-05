@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const puppeteer = require('puppeteer');
 const Match = require('../schemas/Match'); // adjust path if needed
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
+
 
 // GET all matches
 // matches.js (Express route)
@@ -29,7 +31,11 @@ router.post('/importfixtures/:round', async (req, res) => {
   const url = `https://mc-api.dribl.com/api/fixtures?league=gld4J2geNW&type_round=roundrobin_${round}`;
 
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    });
     const page = await browser.newPage();
 
     // Set user-agent (realistic browser)
@@ -109,7 +115,11 @@ router.post('/importresults/:round', async (req, res) => {
     const url = `https://mc-api.dribl.com/api/results?league=gld4J2geNW&type_round=roundrobin_${round}`;
   
     try {
-      const browser = await puppeteer.launch({ headless: true });
+      const browser = await puppeteer.launch({
+        args: chromium.args,
+        executablePath: await chromium.executablePath,
+        headless: chromium.headless,
+      });
       const page = await browser.newPage();
   
       // Set user-agent (realistic browser)

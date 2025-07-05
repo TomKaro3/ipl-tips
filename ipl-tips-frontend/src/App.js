@@ -4,6 +4,7 @@ import SignupPage from "./pages/SignupPage";
 import TipPage from "./pages/TipPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import AdminPage from "./pages/AdminPage";
+import AdminOnlyRoute from "./components/AdminOnlyRoute";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/tips" element={<TipPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin" element={<AdminOnlyRoute><AdminPage /></AdminOnlyRoute>} />
       </Routes>
     </BrowserRouter>
   );

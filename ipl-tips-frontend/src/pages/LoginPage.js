@@ -15,7 +15,11 @@ export default function LoginPage() {
       .post(`${process.env.REACT_APP_API_BASE_URL}/users/login`, { username, password })
       .then(() => {
         localStorage.setItem("username", username);
-        navigate("/tips");
+        if (username.toLowerCase() === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/tips");
+        }
       })
       .catch(() => {
         alert("Login failed. Check username and password.");

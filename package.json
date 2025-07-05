@@ -14,7 +14,9 @@
     "concurrently": "^9.2.0"
   },
   "dependencies": {
+    "chrome-aws-lambda": "^10.1.0",
     "framer-motion": "^12.23.0",
+    "puppeteer-core": "^24.11.2",
     "react-scripts": "^5.0.1"
   }
 }
