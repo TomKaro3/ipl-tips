@@ -10,7 +10,8 @@ export default function LoginPage() {
 
   const handleLogin = () => {
     if (!username || !password) return alert("Enter both username and password");
-    axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login`, { username, password })
+    axios
+      .post(`${process.env.REACT_APP_API_BASE_URL}/users/login`, { username, password })
       .then(() => {
         localStorage.setItem("username", username);
         navigate("/tips");
@@ -21,23 +22,42 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "3rem auto", padding: "1rem", textAlign: "center", border: "1px solid #ccc", borderRadius: 8 }}>
-      <h2>Login to Illawarra Tips</h2>
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
-      />
-      <button onClick={handleLogin} style={{ width: "100%", padding: "0.75rem", marginBottom: "1rem" }}>Login</button>
-      <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+      <div className="w-full max-w-sm p-6 bg-white rounded-2xl shadow-lg">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Illawarra Tips Login
+        </h2>
+        <div className="space-y-4">
+          <input
+            className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+          />
+          <input
+            type="password"
+            className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+          <button
+            onClick={handleLogin}
+            className="w-full py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Login
+          </button>
+        </div>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-blue-500 hover:underline font-medium"
+          >
+            Sign up here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
