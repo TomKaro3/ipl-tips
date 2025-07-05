@@ -1,11 +1,26 @@
 const User = require("../schemas/User");
-const puppeteer = require("puppeteer");
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
+
+async function launchBrowser() {
+  const executablePath = await chromium.executablePath;
+
+  if (!executablePath) {
+    throw new Error("Chrome not found. Check puppeteer-core and chrome-aws-lambda versions.");
+  }
+
+  return await puppeteer.launch({
+    args: chromium.args,
+    executablePath,
+    headless: chromium.headless,
+  });
+}
 
 async function calculateScores(roundNumber) {
   const url = `https://mc-api.dribl.com/api/results?league=gld4J2geNW&type_round=roundrobin_${roundNumber}`;
 
   // Launch Puppeteer and fetch results JSON text
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await launchBrowser();
   const page = await browser.newPage();
 
   // Set user agent to look like a normal browser
