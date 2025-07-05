@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { motion } from "framer-motion";
-axios.defaults.withCredentials = true;
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -26,64 +24,43 @@ export default function LoginPage() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.7 }}
-      className="flex items-center justify-center min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-800 to-pink-700 px-6"
-    >
-      <motion.div
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.3 }}
-        className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10 sm:p-12"
-      >
-        <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-10 tracking-tight">
-          Welcome Back
-        </h1>
-
-        <div className="space-y-8">
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            disabled={loading}
-            className="w-full px-6 py-4 text-lg rounded-xl border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 transition"
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            disabled={loading}
-            className="w-full px-6 py-4 text-lg rounded-xl border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 transition"
-          />
-
-          <button
-            onClick={handleLogin}
-            disabled={loading}
-            className={`w-full py-4 text-white text-lg font-semibold rounded-xl transition-colors ${
-              loading
-                ? "bg-indigo-300 cursor-not-allowed"
-                : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-600"
-            }`}
-          >
-            {loading ? "Logging in..." : "Log In"}
-          </button>
-        </div>
-
-        <p className="mt-10 text-center text-sm text-gray-500">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-tr from-indigo-700 via-purple-700 to-pink-600 px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8 space-y-6">
+        <h1 className="text-2xl font-bold text-center text-gray-900">Welcome Back</h1>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          disabled={loading}
+          className="w-full px-4 py-3 text-base bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={loading}
+          className="w-full px-4 py-3 text-base bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400"
+        />
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className={`w-full py-3 text-white text-base font-medium rounded-xl transition ${
+            loading
+              ? "bg-purple-300 cursor-not-allowed"
+              : "bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-600 hover:to-pink-600"
+          }`}
+        >
+          {loading ? "Logging in..." : "Log In"}
+        </button>
+        <p className="text-center text-sm text-gray-500">
           Don’t have an account?{" "}
-          <Link
-            to="/signup"
-            className="font-medium text-indigo-600 hover:text-indigo-800 underline"
-          >
-            Sign up here
+          <Link to="/signup" className="text-purple-600 font-medium hover:underline">
+            Sign up
           </Link>
         </p>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
