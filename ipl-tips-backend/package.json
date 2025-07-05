@@ -18,6 +18,7 @@
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "mongoose": "^8.16.1",
+    "puppeteer": "^24.11.2",
     "react-scripts": "^5.0.1"
   },
   "devDependencies": {
