@@ -19,11 +19,10 @@ export default function AdminPage() {
     setLoading(true);
     setMessage("");
     try {
-      const route =
-        type === "fixture" ? "importfixtures" : "importresults";
+      const route = type === "fixture" ? "importfixtures" : "importresults";
 
       const res = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/matches`,
+        `${process.env.REACT_APP_API_BASE_URL}/matches/${route}/${round}`,
         {
           method: "POST",
           credentials: "include", // needed for cookies/sessions
