@@ -1,6 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminPage() {
+  const navigate = useNavigate();
+  const username = localStorage.getItem("username");
+
+  useEffect(() => {
+    if (!username || username !== "admin") {
+      navigate("/login");
+    }
+  }, [username, navigate]);
+
   const [round, setRound] = useState("1");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,45 +38,33 @@ export default function AdminPage() {
         <h2 className="text-2xl font-bold text-center">Admin Import Panel</h2>
 
         <div className="space-y-2">
-          <label htmlFor="round" className="block text-sm font-medium">
-            Select Round
-          </label>
-          <select
-            id="round"
+          <label className="block font-semibold">Round Number</label>
+          <input
+            type="text"
             value={round}
             onChange={(e) => setRound(e.target.value)}
-            className="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500"
-          >
-            {[...Array(22)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>
-                R{i + 1}
-              </option>
-            ))}
-          </select>
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
 
-        <div className="flex flex-col space-y-4">
+        <div className="flex justify-between">
           <button
-            onClick={() => handleImport("importfixtures")}
-            className="py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition"
+            onClick={() => handleImport("fixture")}
             disabled={loading}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
           >
-            {loading ? "Importing Fixtures..." : "Import Fixtures"}
+            Import Fixtures
           </button>
           <button
-            onClick={() => handleImport("importresults")}
-            className="py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition"
+            onClick={() => handleImport("result")}
             disabled={loading}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
           >
-            {loading ? "Importing Results..." : "Import Results"}
+            Import Results
           </button>
         </div>
 
-        {message && (
-          <div className="mt-4 text-center text-sm font-medium text-purple-700">
-            {message}
-          </div>
-        )}
+        {message && <p className="text-center text-sm mt-4">{message}</p>}
       </div>
     </div>
   );

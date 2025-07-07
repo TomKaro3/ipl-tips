@@ -3,6 +3,14 @@ const router = express.Router();
 const Match = require('../schemas/Match'); // adjust path if needed
 const puppeteer = require("puppeteer");
 
+// 🔐 Middleware to restrict access to admin only
+function isAdmin(req, res, next) {
+  if (req.session?.username === 'admin') {
+    return next();
+  }
+  return res.status(403).json({ error: "Forbidden: Admins only" });
+}
+
 async function launchBrowser() {
   return await puppeteer.launch({
     headless: true,
@@ -29,7 +37,7 @@ router.get("/", async (req, res) => {
 
 
 // For importing fixtures (before round has started)
-router.post('/importfixtures/:round', async (req, res) => {
+router.post('/importfixtures/:round', isAdmin, async (req, res) => {
   const round = req.params.round;
   console.log('Importing round:', round);
 
@@ -109,7 +117,7 @@ router.post('/importfixtures/:round', async (req, res) => {
 
 
 // For importing results (after round is over)
-router.post('/importresults/:round', async (req, res) => {
+router.post('/importresults/:round', isAdmin, async (req, res) => {
     const round = req.params.round;
     console.log('Importing round:', round);
   
