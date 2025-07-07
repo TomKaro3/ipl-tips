@@ -12,7 +12,7 @@ export default function LoginPage() {
     if (!username || !password) return alert("Enter both username and password");
     setLoading(true);
     axios
-      .post(`${process.env.REACT_APP_API_BASE_URL}/users/login`, { username, password })
+      .post(`${process.env.REACT_APP_API_BASE_URL}/users/login`, { username, password }, { withCredentials: true })
       .then(() => {
         localStorage.setItem("username", username);
         if (username.toLowerCase() === "admin") {
@@ -25,6 +25,10 @@ export default function LoginPage() {
         alert("Login failed. Check username and password.");
       })
       .finally(() => setLoading(false));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleLogin();
   };
 
   const page = {
@@ -78,7 +82,7 @@ export default function LoginPage() {
 
   return (
     <div style={page}>
-      <div style={card}>
+      <div style={card} onKeyDown={handleKeyDown}>
         <h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>IPL Tips</h1>
         <h2
           style={{
@@ -115,7 +119,7 @@ export default function LoginPage() {
           {loading ? "Logging in..." : "Log In"}
         </button>
         <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
-          Don’t have an account?{' '}
+          Don’t have an account?{" "}
           <Link to="/signup">Sign up</Link>
         </p>
       </div>

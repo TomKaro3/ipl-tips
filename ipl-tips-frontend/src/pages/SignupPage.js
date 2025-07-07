@@ -25,6 +25,10 @@ export default function SignupPage() {
       .finally(() => setLoading(false));
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSignup();
+  };
+
   const page = {
     minHeight: "100vh",
     display: "flex",
@@ -76,7 +80,7 @@ export default function SignupPage() {
 
   return (
     <div style={page}>
-      <div style={card}>
+      <div style={card} onKeyDown={handleKeyDown}>
         <h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>IPL Tips</h1>
         <h2
           style={{
