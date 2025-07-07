@@ -31,6 +31,7 @@ app.use(cors({
 
 // ✅ Sessions (after CORS)
 app.use(session({
+  name: "ipl.sid",
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -38,6 +39,7 @@ app.use(session({
     mongoUrl: process.env.MONGO_URI,
   }),
   cookie: {
+    httpOnly: true,
     secure: true,
     sameSite: "none"
   }
