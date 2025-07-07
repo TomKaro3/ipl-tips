@@ -6,8 +6,9 @@ const puppeteer = require("puppeteer");
 // 🔐 Middleware to restrict access to admin only
 function isAdmin(req, res, next) {
   if (req.session.username === 'admin') {
-    return res.status(403).json({ error: "Forbidden: Admins only" });
+    return next(); // ✅ let them through
   }
+  return res.status(403).json({ error: "Forbidden: Admins only" });
 }
 
 async function launchBrowser() {
