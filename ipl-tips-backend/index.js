@@ -2,8 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
 
 const app = express();
 dotenv.config();
@@ -33,6 +31,9 @@ app.use(cors({
   credentials: true
 }));
 
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+
 // ✅ Sessions (after CORS)
 app.use(session({
   name: "ipl.sid",
@@ -45,8 +46,9 @@ app.use(session({
   proxy: true, // needed when trusting proxy for secure cookies
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none"
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'None',
+    maxAge: 1000 * 60 * 60 * 24,
   }
 }));
 

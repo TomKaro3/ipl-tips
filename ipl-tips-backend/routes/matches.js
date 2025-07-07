@@ -15,7 +15,7 @@ function isAdmin(req, res, next) {
 async function launchBrowser() {
   return await puppeteer.launch({
     headless: "new",
-    executablePath: '/opt/render/.cache/puppeteer/chrome/linux-138.0.7204.92/chrome-linux64/chrome',
+    executablePath: '/usr/bin/google-chrome-stable',
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 }

@@ -39,6 +39,9 @@ router.post('/login', async (req, res) => {
     // ✅ Store username in session
     req.session.username = user.username;
     console.log("🧠 Login: Session set to", req.session.username);
+    console.log("🧠 Cookie after login:", req.cookies);
+    console.log("🧠 Session data after setting:", req.session);
+    console.log("🧠 Cookie after login:", req.session.cookie); 
 
     res.json({ message: "Login successful" });
   } catch (err) {

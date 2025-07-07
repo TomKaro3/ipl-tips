@@ -23,7 +23,7 @@ export default function AdminPage() {
         type === "fixture" ? "importfixtures" : "importresults";
 
       const res = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/matches/${route}/${round}`,
+        `${process.env.REACT_APP_API_BASE_URL}/matches`,
         {
           method: "POST",
           credentials: "include", // needed for cookies/sessions
