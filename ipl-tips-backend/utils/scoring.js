@@ -4,7 +4,6 @@ const puppeteer = require("puppeteer");
 async function launchBrowser() {
   return await puppeteer.launch({
     headless: "new",
-    executablePath: puppeteer.executablePath(),
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 }
