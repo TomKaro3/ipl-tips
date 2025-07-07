@@ -8,6 +8,10 @@ const MongoStore = require("connect-mongo");
 const app = express();
 dotenv.config();
 
+// When running behind a reverse proxy (e.g. Vercel), trust the first proxy
+// so secure cookies are correctly recognized.
+app.set('trust proxy', 1);
+
 // Allow JSON parsing first
 app.use(express.json());
 
