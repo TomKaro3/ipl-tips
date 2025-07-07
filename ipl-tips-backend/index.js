@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const app = express();
+const session = require("express-session");
 
 dotenv.config();
 app.use(cors({
@@ -14,6 +15,16 @@ app.use(cors({
   credentials: true, // ⬅️ allow  cookies/session
 }));
 app.use(express.json());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: true,
+    sameSite: "none"
+  }
+}));
 
 // Routes
 const matchRoutes = require('./routes/matches');
