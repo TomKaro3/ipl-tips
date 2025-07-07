@@ -14,8 +14,8 @@ function isAdmin(req, res, next) {
 
 async function launchBrowser() {
   return await puppeteer.launch({
-    headless: true,
-    executablePath: process.env.CHROME_EXECUTABLE_PATH || puppeteer.executablePath(),
+    headless: "new",
+    executablePath: puppeteer.executablePath(),
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 }

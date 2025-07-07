@@ -42,10 +42,11 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
   }),
+  proxy: true, // needed when trusting proxy for secure cookies
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    sameSite: "none"
   }
 }));
 
