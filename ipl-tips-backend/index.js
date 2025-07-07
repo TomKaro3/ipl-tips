@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const app = express();
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 dotenv.config();
 app.use(cors({
@@ -17,9 +18,12 @@ app.use(cors({
 app.use(express.json());
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || "something-secret",
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+  }),
   cookie: {
     secure: true,
     sameSite: "none"
