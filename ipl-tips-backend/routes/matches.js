@@ -5,6 +5,7 @@ const puppeteer = require("puppeteer");
 
 // 🔐 Middleware to restrict access to admin only
 function isAdmin(req, res, next) {
+  console.log("🔍 Session on admin route:", req.session);
   if (req.session.username === 'admin') {
     return next(); // ✅ let them through
   }
