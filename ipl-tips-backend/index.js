@@ -41,7 +41,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "none"
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
   }
 }));
 
