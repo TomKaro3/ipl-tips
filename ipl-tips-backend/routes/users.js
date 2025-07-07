@@ -26,22 +26,25 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ message: "Username and password required" });
-  
-    try {
-      const user = await User.findOne({ username });
-      if (!user) return res.status(404).json({ message: "User not found" });
-  
-      const isMatch = await bcrypt.compare(password, user.password); // 🔐 compare hashed
-      if (!isMatch) return res.status(401).json({ message: "Incorrect password" });
-  
-      res.json({ message: "Login successful" });
-    } catch (err) {
-      console.error("Login error:", err);
-      res.status(500).json({ message: "Error logging in" });
-    }
-  });
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({ message: "Username and password required" });
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password, user.password); // 🔐 compare hashed
+    if (!isMatch) return res.status(401).json({ message: "Incorrect password" });
+
+    // ✅ Store username in session
+    req.session.username = user.username;
+
+    res.json({ message: "Login successful" });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Error logging in" });
+  }
+});
 
   router.post('/tip', async (req, res) => {
     const { username, round, tips } = req.body;
