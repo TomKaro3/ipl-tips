@@ -97,7 +97,7 @@ router.post('/importfixtures/:round', isAdmin, async (req, res) => {
 
     const newFixtures = parsed.data.map(item => {
       const attr = item.attributes;
-      const utcTime = new Date(attr.date); // from API
+      const utcTime = new Date(attr.date);
       const auTime = new Date(utcTime.toLocaleString("en-US", { timeZone: "Australia/Sydney" }));
       return {
         match_id: item.hash_id,
@@ -107,7 +107,6 @@ router.post('/importfixtures/:round', isAdmin, async (req, res) => {
         home_score: attr.home_score,
         away_score: attr.away_score,
         date: auTime
-        
       };
     });
 
@@ -177,7 +176,7 @@ router.post('/importresults/:round', isAdmin, async (req, res) => {
   
       const newResults = parsed.data.map(item => {
         const attr = item.attributes;
-        const utcTime = new Date(attr.date); // from API
+        const utcTime = new Date(attr.date);
         const auTime = new Date(utcTime.toLocaleString("en-US", { timeZone: "Australia/Sydney" }));
         return {
           match_id: item.hash_id,
@@ -187,10 +186,9 @@ router.post('/importresults/:round', isAdmin, async (req, res) => {
           home_score: attr.home_score,
           away_score: attr.away_score,
           date: auTime
-          
         };
       });
-  
+
       await Result.deleteMany({ round: "R" + round });
       await Result.insertMany(newResults);
   
