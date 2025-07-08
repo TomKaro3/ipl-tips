@@ -21,26 +21,47 @@ async function launchBrowser() {
   });
 }
 
-// GET all matches
-// matches.js (Express route)
+// GET /matches?round=R17 — returns both fixtures and results (flattened)
 router.get("/", async (req, res) => {
   try {
-    const round = req.query.round;  // e.g. "R15"
-    const query = round ? { round } : {};
+    const round = req.query.round; // e.g. "R17"
+    if (!round) return res.status(400).json({ message: "Round is required" });
 
-    const fixtures = await Fixture.find(query).lean();
-    const results = await Result.find(query).lean();
+    const roundFilter = { "attributes.round": round };
 
-    const combined = [...fixtures, ...results].sort(
-      (a, b) => new Date(a.date) - new Date(b.date)
-    );
+    const [rawFixtures, rawResults] = await Promise.all([
+      Fixture.find({ ...roundFilter, type: "fixtures" }).lean(),
+      Result.find({ ...roundFilter, type: "results" }).lean(),
+    ]);
+
+    const flatten = (match) => {
+      const attr = match.attributes || {};
+      return {
+        match_id: attr.match_hash_id || match.match_id || match._id.toString(),
+        date: attr.date,
+        round: attr.round,
+        home_team_name: attr.home_team_name,
+        away_team_name: attr.away_team_name,
+        home_logo: attr.home_logo,
+        away_logo: attr.away_logo,
+        home_score: attr.home_score,
+        away_score: attr.away_score,
+        status: attr.status,
+        type: match.type, // 'fixtures' or 'results'
+      };
+    };
+
+    const combined = [...rawFixtures, ...rawResults]
+      .map(flatten)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     res.json(combined);
   } catch (err) {
-    console.error(err);
+    console.error("Error fetching matches:", err);
     res.status(500).json({ message: "Failed to fetch matches" });
   }
 });
+
 
 
 // For importing fixtures (before round has started)
@@ -203,8 +224,8 @@ router.post('/importresults/:round', isAdmin, async (req, res) => {
   // GET /api/matches/rounds - returns array of rounds e.g. ["R1", "R2", "R3"]
 router.get('/rounds', async (req, res) => {
   try {
-    const fixtureRounds = await Fixture.distinct('round');
-    const resultRounds = await Result.distinct('round');
+    const fixtureRounds = await Fixture.distinct('attributes.round', { type: "fixtures" });
+    const resultRounds = await Result.distinct('attributes.round', { type: "results" });
     const allRounds = Array.from(new Set([...fixtureRounds, ...resultRounds]));
     res.json(allRounds);
   } catch (err) {

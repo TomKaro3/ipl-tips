@@ -23,6 +23,7 @@ function TipPage() {
     const fetchRounds = async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/matches/rounds`);
+        console.log("rounds data:", res.data);
         const fetchedRounds = res.data.sort(
           (a, b) => Number(a.replace("R", "")) - Number(b.replace("R", ""))
         );
