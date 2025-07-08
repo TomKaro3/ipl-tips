@@ -23,14 +23,27 @@ function TipPage() {
     const fetchRounds = async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/matches/rounds`);
-        console.log("rounds data:", res.data);
-        const fetchedRounds = res.data.sort(
+        const sortedRounds = res.data.sort(
           (a, b) => Number(a.replace("R", "")) - Number(b.replace("R", ""))
         );
-        setRounds(fetchedRounds);
-        if (fetchedRounds.length > 0) {
-          setRound(Number(fetchedRounds[0].replace("R", "")));
+        setRounds(sortedRounds);
+
+        // Find the first round with at least one FUTURE match
+        for (const roundStr of sortedRounds) {
+          const roundNum = Number(roundStr.replace("R", ""));
+          const matchRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/matches?round=${roundStr}`);
+          const matches = matchRes.data;
+          const now = new Date();
+          const hasFutureMatch = matches.some((match) => new Date(match.date) > now);
+
+          if (hasFutureMatch) {
+            setRound(roundNum);
+            return;
+          }
         }
+
+        // If no future matches found, just pick the latest round
+        setRound(Number(sortedRounds[sortedRounds.length - 1].replace("R", "")));
       } catch (err) {
         console.error("Failed to load rounds:", err);
       }
