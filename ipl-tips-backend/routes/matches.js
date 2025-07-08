@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Match = require('../schemas/Match'); // adjust path if needed
+const Fixture = require('../schemas/Fixture');
+const Result = require('../schemas/Result');
 const puppeteer = require("puppeteer");
 
 // 🔐 Middleware to restrict access to admin only
@@ -25,12 +26,16 @@ async function launchBrowser() {
 router.get("/", async (req, res) => {
   try {
     const round = req.query.round;  // e.g. "R15"
-    let query = {};
-    if (round) {
-      query.round = round;  // make sure this matches your DB field name exactly
-    }
-    const matches = await Match.find(query);
-    res.json(matches);
+    const query = round ? { round } : {};
+
+    const fixtures = await Fixture.find(query).lean();
+    const results = await Result.find(query).lean();
+
+    const combined = [...fixtures, ...results].sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
+
+    res.json(combined);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch matches" });
@@ -90,15 +95,15 @@ router.post('/importfixtures/:round', isAdmin, async (req, res) => {
       return res.status(400).send("No match data found");
     }
 
-    const newMatches = parsed.data.map(item => {
+    const newFixtures = parsed.data.map(item => {
       const attr = item.attributes;
       const utcTime = new Date(attr.date); // from API
       const auTime = new Date(utcTime.toLocaleString("en-US", { timeZone: "Australia/Sydney" }));
       return {
         match_id: item.hash_id,
         round: attr.round,
-        home_team: attr.home_team_name.trim(),
-        away_team: attr.away_team_name.trim(),
+        home_team_name: attr.home_team_name.trim(),
+        away_team_name: attr.away_team_name.trim(),
         home_score: attr.home_score,
         away_score: attr.away_score,
         date: auTime
@@ -106,8 +111,8 @@ router.post('/importfixtures/:round', isAdmin, async (req, res) => {
       };
     });
 
-    await Match.deleteMany({ round: "R" + round });
-    await Match.insertMany(newMatches);
+    await Fixture.deleteMany({ round: "R" + round });
+    await Fixture.insertMany(newFixtures);
 
     console.log('Matches imported:', newMatches.length);
     res.send("Imported round " + round);
@@ -170,15 +175,15 @@ router.post('/importresults/:round', isAdmin, async (req, res) => {
         return res.status(400).send("No match data found");
       }
   
-      const newMatches = parsed.data.map(item => {
+      const newResults = parsed.data.map(item => {
         const attr = item.attributes;
         const utcTime = new Date(attr.date); // from API
         const auTime = new Date(utcTime.toLocaleString("en-US", { timeZone: "Australia/Sydney" }));
         return {
           match_id: item.hash_id,
           round: attr.round,
-          home_team: attr.home_team_name.trim(),
-          away_team: attr.away_team_name.trim(),
+          home_team_name: attr.home_team_name.trim(),
+          away_team_name: attr.away_team_name.trim(),
           home_score: attr.home_score,
           away_score: attr.away_score,
           date: auTime
@@ -186,8 +191,8 @@ router.post('/importresults/:round', isAdmin, async (req, res) => {
         };
       });
   
-      await Match.deleteMany({ round: "R" + round });
-      await Match.insertMany(newMatches);
+      await Result.deleteMany({ round: "R" + round });
+      await Result.insertMany(newResults);
   
       console.log('Matches imported:', newMatches.length);
       res.send("Imported round " + round);
@@ -200,9 +205,10 @@ router.post('/importresults/:round', isAdmin, async (req, res) => {
   // GET /api/matches/rounds - returns array of rounds e.g. ["R1", "R2", "R3"]
 router.get('/rounds', async (req, res) => {
   try {
-    const rounds = await Match.distinct('round');
-    // rounds might be like ['R1', 'R2', 'R3', ...]
-    res.json(rounds);
+    const fixtureRounds = await Fixture.distinct('round');
+    const resultRounds = await Result.distinct('round');
+    const allRounds = Array.from(new Set([...fixtureRounds, ...resultRounds]));
+    res.json(allRounds);
   } catch (err) {
     console.error("Failed to fetch rounds:", err);
     res.status(500).json({ message: "Failed to fetch rounds" });
@@ -213,7 +219,8 @@ router.get('/rounds', async (req, res) => {
   // Delete all matches (for testing/reset)
 router.delete('/clear', async (req, res) => {
     try {
-      await Match.deleteMany({});
+      await Fixture.deleteMany({});
+      await Result.deleteMany({});
       res.send("All matches deleted");
     } catch (err) {
       res.status(500).send("Failed to delete matches");

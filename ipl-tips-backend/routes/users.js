@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../schemas/User');
-const Match = require('../schemas/Match');
   
 const bcrypt = require('bcryptjs'); // at top
 

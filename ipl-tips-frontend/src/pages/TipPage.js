@@ -288,7 +288,7 @@ function TipPage() {
                   textShadow: "0 1px 2px rgba(14,82,230,0.4)",
                 }}
               >
-                {match.home_team} 🆚 {match.away_team}
+                {match.home_team_name} 🆚 {match.away_team_name}
               </div>
               <div
                 style={{
