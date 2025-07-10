@@ -228,6 +228,13 @@ function TipPage() {
     boxShadow: "0 0 6px #d24949",
   };
 
+  const scoreStyle = {
+    fontWeight: "700",
+    fontSize: "1rem",
+    color: "#2b8a3e",
+    marginBottom: "0.5rem",
+  };
+
   return (
     <div style={page}>
       <div style={card}>
@@ -294,6 +301,11 @@ function TipPage() {
           });
           const isLocked = lockedMatches.includes(match.match_id);
           const userTip = tips[match.match_id];
+          const hasScore =
+            match.home_score !== undefined &&
+            match.home_score !== null &&
+            match.away_score !== undefined &&
+            match.away_score !== null;
 
           return (
             <div key={match.match_id} style={matchCard(isLocked)}>
@@ -318,6 +330,12 @@ function TipPage() {
               >
                 🕒 Kickoff: {kickoffTime}
               </div>
+
+              {hasScore && (
+                <div style={scoreStyle}>
+                  {match.home_score} - {match.away_score}
+                </div>
+              )}
 
               {isLocked ? (
                 <div style={lockedLabel}>⛔ Tipping Closed</div>
