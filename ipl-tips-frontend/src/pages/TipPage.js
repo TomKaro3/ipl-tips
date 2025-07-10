@@ -194,14 +194,13 @@ function TipPage() {
     borderRadius: "12px",
     padding: "1rem",
     marginBottom: "1rem",
-    boxShadow: locked
-      ? "inset 0 0 10px #e26a6a"
-      : "0 4px 12px rgba(14, 82, 230, 0.15)",
-    backgroundColor: locked ? "#fee6e6" : "#f0f7ff",
-    transition: "background-color 0.3s ease",
+    boxShadow: "0 4px 12px rgba(14, 82, 230, 0.15)",
+    backgroundColor: locked ? "#e0e0e0" : "#f0f7ff",
+    opacity: locked ? 0.6 : 1,
+    transition: "background-color 0.3s ease, opacity 0.3s ease",
   });
 
-  const tipButton = (active) => ({
+  const tipButton = (active, locked) => ({
     backgroundColor: active ? "#0e52e6" : "#d6e0ff",
     color: active ? "white" : "#0e52e6",
     border: "none",
@@ -209,24 +208,14 @@ function TipPage() {
     borderRadius: "6px",
     marginRight: "0.6rem",
     fontWeight: "600",
-    cursor: "pointer",
+    cursor: locked ? "not-allowed" : "pointer",
+    opacity: locked ? 0.5 : 1,
+    pointerEvents: locked ? "none" : "auto",
     boxShadow: active
       ? "0 3px 8px rgba(14, 82, 230, 0.7)"
       : "0 2px 5px rgba(14, 82, 230, 0.35)",
     transition: "all 0.3s ease",
   });
-
-  const lockedLabel = {
-    marginTop: "0.5rem",
-    color: "#c93e3e",
-    fontWeight: "700",
-    fontSize: "0.9rem",
-    backgroundColor: "#fddede",
-    padding: "0.25rem 0.6rem",
-    borderRadius: "6px",
-    display: "inline-block",
-    boxShadow: "0 0 6px #d24949",
-  };
 
   const scoreStyle = {
     fontWeight: "700",
@@ -337,30 +326,29 @@ function TipPage() {
                 </div>
               )}
 
-              {isLocked ? (
-                <div style={lockedLabel}>⛔ Tipping Closed</div>
-              ) : (
-                <div style={{ marginBottom: "0.7rem" }}>
-                  <button
-                    onClick={() => handleTip(match.match_id, "home")}
-                    style={tipButton(userTip === "home")}
-                  >
-                    🏠 Home
-                  </button>
-                  <button
-                    onClick={() => handleTip(match.match_id, "draw")}
-                    style={tipButton(userTip === "draw")}
-                  >
-                    ⚖️ Draw
-                  </button>
-                  <button
-                    onClick={() => handleTip(match.match_id, "away")}
-                    style={tipButton(userTip === "away")}
-                  >
-                    🚌 Away
-                  </button>
-                </div>
-              )}
+              <div style={{ marginBottom: "0.7rem" }}>
+                <button
+                  onClick={() => handleTip(match.match_id, "home")}
+                  style={tipButton(userTip === "home", isLocked)}
+                  disabled={isLocked}
+                >
+                  🏠 Home
+                </button>
+                <button
+                  onClick={() => handleTip(match.match_id, "draw")}
+                  style={tipButton(userTip === "draw", isLocked)}
+                  disabled={isLocked}
+                >
+                  ⚖️ Draw
+                </button>
+                <button
+                  onClick={() => handleTip(match.match_id, "away")}
+                  style={tipButton(userTip === "away", isLocked)}
+                  disabled={isLocked}
+                >
+                  🚌 Away
+                </button>
+              </div>
 
               <div
                 style={{
