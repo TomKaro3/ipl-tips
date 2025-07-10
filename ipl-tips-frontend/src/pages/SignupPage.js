@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import Logo from "../components/Logo";
 
 axios.defaults.withCredentials = true;
 
@@ -77,11 +78,12 @@ export default function SignupPage() {
     background: "#d3d3d3",
     cursor: "not-allowed",
   };
-
+//<h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>IPL Tips</h1>
   return (
     <div style={page}>
       <div style={card} onKeyDown={handleKeyDown}>
-        <h1 style={{ margin: 0, textAlign: "center", color: "#333" }}>IPL Tips</h1>
+        <Logo />
+        
         <h2
           style={{
             margin: "0 0 0.5rem 0",

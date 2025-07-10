@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Logo from "../components/Logo";
+
 axios.defaults.withCredentials = true;
 
 export default function LeaderboardPage() {
@@ -42,14 +44,14 @@ export default function LeaderboardPage() {
     <div style={page}>
       <div style={card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{
+          <Logo size={60} />
+          <button onClick={logout} style={{ padding: "0.4rem 0.8rem", border: "none", borderRadius: "8px", color: "#fff", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", cursor: "pointer", fontWeight: "bold" }}>Logout</button>
+        </div>
+        <h2 style={{
             marginBottom: "1.5rem",
             fontSize: "2rem",
             color: "#333"
           }}>🏆 Illawarra Tips Leaderboard</h2>
-          <button onClick={logout} style={{ padding: "0.4rem 0.8rem", border: "none", borderRadius: "8px", color: "#fff", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", cursor: "pointer", fontWeight: "bold" }}>Logout</button>
-        </div>
-
       <ol style={{
         listStyle: "none",
         padding: 0,

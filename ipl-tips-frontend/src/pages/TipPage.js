@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Logo from "../components/Logo";
+
 axios.defaults.withCredentials = true;
 
 function TipPage() {
@@ -230,9 +232,11 @@ function TipPage() {
     <div style={page}>
       <div style={card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={header}>📜 Submit Your Tips — Round {round}</h2>
+          <Logo size={100} />
+          
           <button onClick={logout} style={{ padding: "0.4rem 0.8rem", border: "none", borderRadius: "8px", color: "#fff", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", cursor: "pointer", fontWeight: "bold" }}>Logout</button>
         </div>
+        <h2 style={header}>📜 Submit Your Tips — Round {round}</h2>
 
       {/* Round selection + navigation */}
       <div style={navBar}>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Logo from "../components/Logo";
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-tr from-indigo-800 to-purple-700 text-white px-4">
       <div className="bg-white text-gray-900 rounded-2xl shadow-xl p-8 max-w-md w-full space-y-6">
+        <Logo size={60} />
         <h2 className="text-2xl font-bold text-center">Admin Import Panel</h2>
 
         <div className="space-y-2">
