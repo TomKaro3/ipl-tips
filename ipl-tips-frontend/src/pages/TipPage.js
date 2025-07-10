@@ -25,9 +25,14 @@ function TipPage() {
     const fetchRounds = async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/matches/rounds`);
-        const sortedRounds = res.data.sort(
-          (a, b) => Number(a.replace("R", "")) - Number(b.replace("R", ""))
-        );
+        const sortedRounds = res.data
+          .filter((val, idx, arr) => arr.indexOf(val) === idx)
+          .sort((a, b) => {
+            const parse = (r) => r.replace("R", "").split(".").map(Number);
+            const [aMain, aSub = 0] = parse(a);
+            const [bMain, bSub = 0] = parse(b);
+            return aMain === bMain ? aSub - bSub : aMain - bMain;
+          });
         setRounds(sortedRounds);
 
         // Find the first round with at least one FUTURE match
@@ -39,13 +44,13 @@ function TipPage() {
           const hasFutureMatch = matches.some((match) => new Date(match.date) > now);
 
           if (hasFutureMatch) {
-            setRound(roundNum);
+            setRound(roundStr);
             return;
           }
         }
 
         // If no future matches found, just pick the latest round
-        setRound(Number(sortedRounds[sortedRounds.length - 1].replace("R", "")));
+        setRound(sortedRounds[sortedRounds.length - 1]);
       } catch (err) {
         console.error("Failed to load rounds:", err);
       }
@@ -59,7 +64,7 @@ function TipPage() {
       setLoading(true);
       try {
         const matchesRes = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/matches?round=R${round}`
+          `${process.env.REACT_APP_API_BASE_URL}/matches?round=${round}`
         );
         const matchData = matchesRes.data;
 
@@ -116,8 +121,9 @@ function TipPage() {
   if (!round) return <p>⚠️ No rounds available</p>;
 
   const roundNumbers = rounds.map((r) => Number(r.replace("R", "")));
-  const minRound = Math.min(...roundNumbers);
-  const maxRound = Math.max(...roundNumbers);
+  const currentIndex = rounds.indexOf(round);
+  const isFirstRound = currentIndex <= 0;
+  const isLastRound = currentIndex >= rounds.length - 1;
 
   // --- STYLES ---
   const page = {
@@ -237,9 +243,11 @@ function TipPage() {
       {/* Round selection + navigation */}
       <div style={navBar}>
         <button
-          style={round <= minRound ? buttonDisabled : button}
-          onClick={() => setRound((prev) => Math.max(minRound, prev - 1))}
-          disabled={round <= minRound}
+          style={isFirstRound ? buttonDisabled : button}
+          onClick={() => {
+            if (currentIndex > 0) setRound(rounds[currentIndex - 1]);
+          }}
+          disabled={isFirstRound}
           onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"}
           onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
           onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
@@ -249,23 +257,22 @@ function TipPage() {
 
         <select
           value={round}
-          onChange={(e) => setRound(Number(e.target.value))}
+          onChange={(e) => setRound(e.target.value)}
           style={selectStyle}
         >
-          {rounds.map((r) => {
-            const roundNum = Number(r.replace("R", ""));
-            return (
-              <option key={r} value={roundNum}>
-                {r}
-              </option>
-            );
-          })}
+          {rounds.map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
         </select>
 
         <button
-          style={round >= maxRound ? buttonDisabled : button}
-          onClick={() => setRound((prev) => Math.min(maxRound, prev + 1))}
-          disabled={round >= maxRound}
+          style={isLastRound ? buttonDisabled : button}
+          onClick={() => {
+            if (currentIndex < rounds.length - 1) setRound(rounds[currentIndex + 1]);
+          }}
+          disabled={isLastRound}
           onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"}
           onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
           onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
