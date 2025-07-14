@@ -81,6 +81,7 @@ function TipPage() {
         const roundKey = `round${round}`;
         const userTips = userRes.data.tips?.[roundKey] || {};
         setTips(userTips);
+        setSubmitted(Object.keys(userTips).length > 0); // ✅ if tips exist, mark as submitted
       } catch (err) {
         console.error("Error loading data:", err);
         alert("⚠️ Failed to load matches or user data");
