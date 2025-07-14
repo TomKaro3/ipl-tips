@@ -12,6 +12,7 @@ function TipPage() {
   const [loading, setLoading] = useState(true);
   const [round, setRound] = useState(null);
   const [rounds, setRounds] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
 
   const logout = () => {
@@ -37,21 +38,17 @@ function TipPage() {
           });
         setRounds(sortedRounds);
 
-        // Find the first round with at least one FUTURE match
         for (const roundStr of sortedRounds) {
-          const roundNum = Number(roundStr.replace("R", ""));
           const matchRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/matches?round=${roundStr}`);
           const matches = matchRes.data;
           const now = new Date();
           const hasFutureMatch = matches.some((match) => new Date(match.date) > now);
-
           if (hasFutureMatch) {
             setRound(roundStr);
             return;
           }
         }
 
-        // If no future matches found, just pick the latest round
         setRound(sortedRounds[sortedRounds.length - 1]);
       } catch (err) {
         console.error("Failed to load rounds:", err);
@@ -112,6 +109,7 @@ function TipPage() {
       })
       .then((res) => {
         alert(res.data.message || "✅ Tips saved!");
+        setSubmitted(true); // ✅ flag as submitted
       })
       .catch((err) => {
         console.error("Submit tips error:", err);
@@ -122,12 +120,10 @@ function TipPage() {
   if (loading) return <p>⏳ Loading matches...</p>;
   if (!round) return <p>⚠️ No rounds available</p>;
 
-  const roundNumbers = rounds.map((r) => Number(r.replace("R", "")));
   const currentIndex = rounds.indexOf(round);
   const isFirstRound = currentIndex <= 0;
   const isLastRound = currentIndex >= rounds.length - 1;
 
-  // --- STYLES ---
   const page = {
     minHeight: "100vh",
     display: "flex",
@@ -198,229 +194,235 @@ function TipPage() {
     boxShadow: "none",
   };
 
-  const matchCard = (locked) => ({
-    borderRadius: "12px",
-    padding: "1rem",
-    marginBottom: "1rem",
-    boxShadow: "0 4px 12px rgba(14, 82, 230, 0.15)",
-    backgroundColor: locked ? "#e0e0e0" : "#f0f7ff",
-    opacity: locked ? 0.6 : 1,
-    transition: "background-color 0.3s ease, opacity 0.3s ease",
-  });
-
-  const tipButton = (active, locked) => ({
-    backgroundColor: active ? "#0e52e6" : "#d6e0ff",
-    color: active ? "white" : "#0e52e6",
-    border: "none",
-    padding: "0.5rem 0.9rem",
-    borderRadius: "6px",
-    marginRight: "0.6rem",
-    fontWeight: "600",
-    cursor: locked ? "not-allowed" : "pointer",
-    opacity: locked ? 0.5 : 1,
-    pointerEvents: locked ? "none" : "auto",
-    boxShadow: active
-      ? "0 3px 8px rgba(14, 82, 230, 0.7)"
-      : "0 2px 5px rgba(14, 82, 230, 0.35)",
-    transition: "all 0.3s ease",
-  });
-
-  const scoreStyle = {
-    fontWeight: "700",
-    fontSize: "1rem",
-    color: "#2b8a3e",
-    marginBottom: "0.5rem",
-  };
-
   return (
     <div style={page}>
       <div style={card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Logo size={100} />
-          
-          <button onClick={logout} style={{ padding: "0.4rem 0.8rem", border: "none", borderRadius: "8px", color: "#fff", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", cursor: "pointer", fontWeight: "bold" }}>Logout</button>
+          <button
+            onClick={logout}
+            style={{
+              padding: "0.4rem 0.8rem",
+              border: "none",
+              borderRadius: "8px",
+              color: "#fff",
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              cursor: "pointer",
+              fontWeight: "bold"
+            }}
+          >
+            Logout
+          </button>
         </div>
         <h2 style={header}>📜 Submit Your Tips — Round {round}</h2>
 
-      {/* Round selection + navigation */}
-      <div style={navBar}>
-        <button
-          style={isFirstRound ? buttonDisabled : button}
-          onClick={() => {
-            if (currentIndex > 0) setRound(rounds[currentIndex - 1]);
-          }}
-          disabled={isFirstRound}
-          onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"}
-          onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-          onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-        >
-          ⬅️ Previous Round
-        </button>
+        <div style={navBar}>
+          <button
+            style={isFirstRound ? buttonDisabled : button}
+            onClick={() => {
+              if (currentIndex > 0) setRound(rounds[currentIndex - 1]);
+            }}
+            disabled={isFirstRound}
+          >
+            ⬅️ Previous Round
+          </button>
 
-        <select
-          value={round}
-          onChange={(e) => setRound(e.target.value)}
-          style={selectStyle}
-        >
-          {rounds.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
+          <select
+            value={round}
+            onChange={(e) => setRound(e.target.value)}
+            style={selectStyle}
+          >
+            {rounds.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
 
-        <button
-          style={isLastRound ? buttonDisabled : button}
-          onClick={() => {
-            if (currentIndex < rounds.length - 1) setRound(rounds[currentIndex + 1]);
-          }}
-          disabled={isLastRound}
-          onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"}
-          onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-          onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-        >
-          Next Round ➡️
-        </button>
-      </div>
-
-      {matches.length === 0 ? (
-        <p style={{ textAlign: "center", color: "#555", fontWeight: "600" }}>
-          No matches found for Round {round}.
-        </p>
-      ) : (
-        matches.map((match) => {
-          const kickoffTime = new Date(match.date).toLocaleString("en-AU", {
-            weekday: "long",
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-          const isLocked = lockedMatches.includes(match.match_id);
-          const userTip = tips[match.match_id];
-          const hasScore =
-            match.home_score !== undefined &&
-            match.home_score !== null &&
-            match.away_score !== undefined &&
-            match.away_score !== null;
-
-          return (
-            <div key={match.match_id} style={matchCard(isLocked)}>
-              <div
-                style={{
-                  fontWeight: "700",
-                  fontSize: "1.1rem",
-                  marginBottom: "0.3rem",
-                  color: "#0e52e6",
-                  textShadow: "0 1px 2px rgba(14,82,230,0.4)",
-                }}
-              >
-                {cleanTeamName(match.home_team_name)} 🆚 {cleanTeamName(match.away_team_name)}
-              </div>
-              <div
-                style={{
-                  color: "#333",
-                  fontWeight: "600",
-                  marginBottom: "0.6rem",
-                  fontSize: "0.85rem",
-                }}
-              >
-                🕒 Kickoff: {kickoffTime}
-              </div>
-
-              {hasScore && (
-                <div style={scoreStyle}>
-                  {match.home_score} - {match.away_score}
-                </div>
-              )}
-
-              <div style={{ marginBottom: "0.7rem" }}>
-                <button
-                  onClick={() => handleTip(match.match_id, "home")}
-                  style={tipButton(userTip === "home", isLocked)}
-                  disabled={isLocked}
-                >
-                  🏠 Home
-                </button>
-                <button
-                  onClick={() => handleTip(match.match_id, "draw")}
-                  style={tipButton(userTip === "draw", isLocked)}
-                  disabled={isLocked}
-                >
-                  ⚖️ Draw
-                </button>
-                <button
-                  onClick={() => handleTip(match.match_id, "away")}
-                  style={tipButton(userTip === "away", isLocked)}
-                  disabled={isLocked}
-                >
-                  🚌 Away
-                </button>
-              </div>
-
-              <div
-                style={{
-                  fontWeight: "600",
-                  fontSize: "0.9rem",
-                  color: "#444",
-                }}
-              >
-                ✅ Your Tip: <strong>{userTip || "None"}</strong>
-              </div>
-            </div>
-          );
-        })
-      )}
-
-      <button
-        onClick={submitTips}
-        style={{
-          display: "block",
-          width: "100%",
-          padding: "0.9rem",
-          backgroundColor: "#28a745",
-          color: "#fff",
-          fontSize: "1.25rem",
-          fontWeight: "700",
-          border: "none",
-          borderRadius: "10px",
-          marginTop: "1.8rem",
-          boxShadow: "0 6px 16px rgba(40, 167, 69, 0.6)",
-          cursor: "pointer",
-          transition: "background-color 0.3s ease, transform 0.15s ease",
-        }}
-        onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
-        onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      >
-        💾 Save All Tips
-      </button>
-
-      <p
-        style={{
-          textAlign: "center",
-          marginTop: "2rem",
-          fontWeight: "600",
-          fontSize: "1.1rem",
-        }}
-      >
-        <a
-          href="/leaderboard"
-          style={{
-            textDecoration: "none",
-            color: "#0e52e6",
-            fontWeight: "700",
-            transition: "color 0.25s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#0744b8")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#0e52e6")}
-        >
-          🏆 View Leaderboard
-        </a>
-      </p>
+          <button
+            style={isLastRound ? buttonDisabled : button}
+            onClick={() => {
+              if (currentIndex < rounds.length - 1) setRound(rounds[currentIndex + 1]);
+            }}
+            disabled={isLastRound}
+          >
+            Next Round ➡️
+          </button>
         </div>
+
+        {matches.length === 0 ? (
+          <p style={{ textAlign: "center", color: "#555", fontWeight: "600" }}>
+            No matches found for Round {round}.
+          </p>
+        ) : (
+          matches.map((match) => {
+            const isLocked = lockedMatches.includes(match.match_id);
+            const userTip = tips[match.match_id];
+            const hasScore =
+              match.home_score !== null &&
+              match.away_score !== null;
+
+            let actualResult = null;
+            if (hasScore) {
+              if (match.home_score > match.away_score) actualResult = "home";
+              else if (match.home_score < match.away_score) actualResult = "away";
+              else actualResult = "draw";
+            }
+
+            const getBoxStyle = (type) => {
+              const isCorrect = hasScore && actualResult === type;
+              const isUser = userTip === type;
+              return {
+                flex: 1,
+                padding: "0.9rem",
+                textAlign: "center",
+                borderRadius: "8px",
+                border: isCorrect ? "2px solid #28a745" : isUser ? "2px solid #0e52e6" : "1px solid #ccc",
+                backgroundColor: isCorrect
+                  ? "#eafbea"
+                  : isUser
+                  ? "#eef3fe"
+                  : "#fff",
+                color: isCorrect ? "#2e7d32" : isUser ? "#0e52e6" : "#333",
+                fontWeight: "600",
+                cursor: isLocked ? "not-allowed" : "pointer",
+                opacity: isLocked ? 0.6 : 1,
+                boxShadow: isCorrect
+                  ? "0 0 10px rgba(40, 167, 69, 0.2)"
+                  : isUser
+                  ? "0 0 6px rgba(14, 82, 230, 0.2)"
+                  : "none",
+                transition: "all 0.2s ease-in-out",
+                pointerEvents: isLocked ? "none" : "auto",
+              };
+            };
+
+            const kickoffTime = new Date(match.date).toLocaleString("en-AU", {
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            return (
+              <div key={match.match_id} style={{
+                padding: "1rem",
+                marginBottom: "1rem",
+                borderRadius: "12px",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                backgroundColor: "#f9f9f9"
+              }}>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "0.5rem"
+                }}>
+                  <div style={{ fontWeight: "700", fontSize: "1rem", color: "#0e52e6" }}>
+                    {cleanTeamName(match.home_team_name)} vs {cleanTeamName(match.away_team_name)}
+                  </div>
+                  <div style={{ fontSize: "0.85rem", color: "#666" }}>
+                    🕒 {kickoffTime}
+                  </div>
+                </div>
+
+                {hasScore && (
+                  <div style={{ marginBottom: "0.7rem", fontWeight: "600", color: "#28a745" }}>
+                    Final Score: {match.home_score} - {match.away_score}
+                  </div>
+                )}
+
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <div
+                    style={getBoxStyle("home")}
+                    onClick={() => handleTip(match.match_id, "home")}
+                  >
+                    🏠 Home<br />{cleanTeamName(match.home_team_name)}
+                  </div>
+                  <div
+                    style={getBoxStyle("draw")}
+                    onClick={() => handleTip(match.match_id, "draw")}
+                  >
+                    ⚖️ Draw
+                  </div>
+                  <div
+                    style={getBoxStyle("away")}
+                    onClick={() => handleTip(match.match_id, "away")}
+                  >
+                    🚌 Away<br />{cleanTeamName(match.away_team_name)}
+                  </div>
+                </div>
+
+                <div style={{ marginTop: "0.5rem", fontSize: "0.85rem", color: "#555" }}>
+                  ✅ Your Tip: <strong>{userTip || "None"}</strong>
+                  {hasScore && userTip === actualResult && (
+                    <span style={{ color: "#28a745", marginLeft: "0.5rem" }}>✔️ Correct</span>
+                  )}
+                  {hasScore && userTip && userTip !== actualResult && (
+                    <span style={{ color: "#dc3545", marginLeft: "0.5rem" }}>❌ Wrong</span>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+
+        <button
+          onClick={submitTips}
+          disabled={Object.keys(tips).length < matches.length}
+          style={{
+            display: "block",
+            width: "100%",
+            padding: "0.9rem",
+            backgroundColor: Object.keys(tips).length < matches.length ? "#ccc" : "#28a745",
+            color: "#fff",
+            fontSize: "1.25rem",
+            fontWeight: "700",
+            border: "none",
+            borderRadius: "10px",
+            marginTop: "1.8rem",
+            boxShadow: Object.keys(tips).length < matches.length
+              ? "none"
+              : "0 6px 16px rgba(40, 167, 69, 0.6)",
+            cursor: Object.keys(tips).length < matches.length ? "not-allowed" : "pointer",
+            transition: "background-color 0.3s ease, transform 0.15s ease",
+          }}
+          onMouseDown={(e) => {
+            if (Object.keys(tips).length === matches.length) {
+              e.currentTarget.style.transform = "scale(0.95)";
+            }
+          }}
+          onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        >
+          {submitted ? "🔄 Change Tips" : "💾 Save All Tips"}
+        </button>
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "2rem",
+            fontWeight: "600",
+            fontSize: "1.1rem",
+          }}
+        >
+          <a
+            href="/leaderboard"
+            style={{
+              textDecoration: "none",
+              color: "#0e52e6",
+              fontWeight: "700",
+              transition: "color 0.25s ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#0744b8")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#0e52e6")}
+          >
+            🏆 View Leaderboard
+          </a>
+        </p>
       </div>
+    </div>
   );
 }
 
